@@ -1,6 +1,5 @@
 
 from django.http import JsonResponse
-from django.contrib.sessions.models import Session
 from .models import Msg
 from django.shortcuts import render, redirect
 from .ai import ai
@@ -18,9 +17,9 @@ def send(requests):
     if requests.method == 'POST':
         user, _ = get_or_create_msg(requests)
         data = json.loads(requests.body)
-        messages = data["messages"][-30:]
+        messages = data["messages"]
         try:
-            ai_response = str(ai(str(messages), name=user.name, girlfriend=user.girlfriend))
+            ai_response = str(ai(str(messages[-30:]), user))
             response = {
                 'status': 'ok',
                 'message': {'role': 'assistant', 'content': ai_response}
@@ -57,13 +56,15 @@ def get_or_create_msg(requests):
 
     if not requests.session.session_key:
         requests.session.create()
-        first_time = True
 
     session = requests.session.session_key
 
     msg = Msg.objects.filter(session=session).last()
     if not msg:
         msg = Msg.objects.create(session=session)
+
+    if msg.name == None:
+        first_time = True
 
     return msg, first_time
 
