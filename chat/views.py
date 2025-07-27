@@ -9,6 +9,7 @@ import json
 # Create your views here.
 
 def chat(requests):
+    remove_empty_msgs()
     user, first_time = get_or_create_msg(requests)
     messages = user.msg if user.msg is not None else []
     return render(requests, 'index.html' , {'msg': messages, 'first_time': first_time})
@@ -20,6 +21,8 @@ def send(requests):
         messages = data["messages"]
         try:
             ai_response = str(ai(str(messages[-30:]), user))
+            if ai_response == '':
+                return JsonResponse({'status': 'error'})
             response = {
                 'status': 'ok',
                 'message': {'role': 'assistant', 'content': ai_response}
@@ -68,3 +71,5 @@ def get_or_create_msg(requests):
 
     return msg, first_time
 
+def remove_empty_msgs():
+    Msg.objects.filter(name__isnull=True).delete()

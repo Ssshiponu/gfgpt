@@ -1,6 +1,6 @@
 from google import genai
 from google.genai import types
-from django.conf import settings
+from chat.models import APIKey
 
 def ai(context, user):
     name = user.name
@@ -40,13 +40,24 @@ def ai(context, user):
     else:
         system_instruction = gf
 
-    client = genai.Client(api_key=settings.API_KEY)
-    response = client.models.generate_content(
-        model="gemini-2.5-flash",
-        config=types.GenerateContentConfig(
-            system_instruction=system_instruction,
-            response_modalities=["text"],
-        ),
-        contents=context
-    )
-    return response.text
+    reply_message = ''
+
+    try:
+        for api_key in APIKey.objects.all():
+            client = genai.Client(api_key=api_key.key)
+            response = client.models.generate_content(
+                model="gemini-2.5-flash",
+                config=types.GenerateContentConfig(
+                    system_instruction=system_instruction,
+                    response_modalities=["text"],
+                ),
+                contents=context
+            )
+            if response.text:
+                reply_message = response.text
+                print(api_key.key)
+                break
+    except Exception as e:
+        print(e)
+
+    return reply_message
