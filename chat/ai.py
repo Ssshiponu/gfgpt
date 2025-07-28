@@ -55,7 +55,6 @@ def ai(context, user):
             )
             if response.text:
                 reply_message = response.text
-                print(api_key.key)
                 break
     except Exception as e:
         print(e)

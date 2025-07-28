@@ -7,11 +7,12 @@ from .models import Msg, APIKey
 
 @admin.register(Msg)
 class MsgAdmin(admin.ModelAdmin):
-    list_display = ('name', 'girlfriend', 'gender', 'session', 'created_at', 'updated_at')
+    list_display = ('name', 'girlfriend', 'gender', 'created_at', 'updated_at')
     list_filter = ('gender', 'created_at', 'updated_at')
     search_fields = ('name', 'girlfriend', 'session')
-    readonly_fields = ('formatted_msg', 'created_at', 'updated_at')
-    
+    readonly_fields = ('formatted_msg', 'session', 'created_at', 'updated_at')
+    list_per_page = 50
+
     fieldsets = (
         ('Basic Information', {
             'fields': ('name', 'girlfriend', 'gender', 'session')
@@ -45,12 +46,16 @@ class MsgAdmin(admin.ModelAdmin):
                 for message in msg_data:
                     if isinstance(message, dict):
                         role = message.get('role', 'unknown')
+                        if role == 'user':
+                            role = obj.name
+                        elif role == 'assistant':
+                            role = obj.girlfriend
                         content = message.get('content', '')
                         table_rows.append(f"<tr><td style='font-weight: bold; padding-right: 10px; vertical-align: top;'>{role}:</td><td>{content}</td></tr>")
                     else:
                         table_rows.append(f"<tr><td colspan='2'>{message}</td></tr>")
                 
-                return mark_safe(f"<table style='border-collapse: collapse;'>{''.join(table_rows)}</table>")
+                return mark_safe(f"<table style='border-collapse: collapse; width: 100%; max-width: 400px;'>{''.join(table_rows)}</table>")
             
             # Handle dictionary
             elif isinstance(msg_data, dict):
