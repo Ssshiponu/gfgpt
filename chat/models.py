@@ -13,6 +13,19 @@ class Msg(models.Model):
     )
     gender = models.CharField(max_length=100, null=True, blank=True , choices=genders)
 
+    # settings
+    settings = models.JSONField(null=True, blank=True, default={
+        "language": 'bangla',
+        "useEmojis": 'auto',
+        "pronoun": 'তুমি',
+        "personality": 'flirty',
+        "theme": 'romantic',
+    })
+
+    # tracking
+    ip_address = models.GenericIPAddressField(null=True, blank=True)
+    geo_location = models.JSONField(null=True, blank=True)
+
     created_at = models.DateTimeField(auto_now_add=True, null=True, blank=True)
     updated_at = models.DateTimeField(auto_now=True, null=True, blank=True)
 
@@ -36,3 +49,4 @@ class APIKey(models.Model):
 
     def __str__(self):
         return self.key
+    

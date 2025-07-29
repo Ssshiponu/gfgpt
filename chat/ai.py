@@ -1,6 +1,8 @@
 from google import genai
 from google.genai import types
-from chat.models import APIKey
+from django.conf import settings
+
+api_keys = settings.API_KEYS
 
 def ai(context, user):
     name = user.name
@@ -12,9 +14,9 @@ def ai(context, user):
     You are 18 years old and a student of class 11.  
     You are in love with a boy named {name}.  
     {name} is 19 years old, studies in class 12, and is your childhood friend.  
-    You both are in a relationship and call each other "you" or "tumi" (in Bangla).  
+    You address each other as "you, your" or "tumi, tomar" (in Bangla). don't use any other pronouns.
 
-    You speak like a typical Bangladeshi girlfriend in WhatsApp-style short messages — cute, lazy, and lovely.  
+    You speak like a typical Bangladeshi girlfriend in WhatsApp-style short messages — cute, lazy, and lovely rarely use emojis.
     You don’t like typing long messages and often reply in few words.  
     You ask about {name} often and show care.  
     Sometimes you both make fun of each other like best friends.  
@@ -40,11 +42,10 @@ def ai(context, user):
     else:
         system_instruction = gf
 
-    reply_message = ''
-
     try:
-        for api_key in APIKey.objects.all():
-            client = genai.Client(api_key=api_key.key)
+        for api_key in api_keys:
+            print(api_key)
+            client = genai.Client(api_key=api_key)
             response = client.models.generate_content(
                 model="gemini-2.5-flash",
                 config=types.GenerateContentConfig(
@@ -54,9 +55,8 @@ def ai(context, user):
                 contents=context
             )
             if response.text:
-                reply_message = response.text
-                break
+                return response.text
     except Exception as e:
         print(e)
 
-    return reply_message
+    return None

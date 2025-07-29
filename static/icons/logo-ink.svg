@@ -7,9 +7,9 @@
    viewBox="0 0 210 297"
    version="1.1"
    id="svg1"
-   inkscape:export-filename="icon.svg"
-   inkscape:export-xdpi="12.7"
-   inkscape:export-ydpi="12.7"
+   inkscape:export-filename="icon-192.png"
+   inkscape:export-xdpi="76.199997"
+   inkscape:export-ydpi="76.199997"
    inkscape:version="1.4.2 (ebf0e94, 2025-05-08)"
    sodipodi:docname="logo-ink.svg"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
@@ -27,9 +27,9 @@
      inkscape:deskcolor="#d1d1d1"
      inkscape:document-units="mm"
      showguides="true"
-     inkscape:zoom="0.10868406"
-     inkscape:cx="-1946.0075"
-     inkscape:cy="1278.9364"
+     inkscape:zoom="1.738945"
+     inkscape:cx="121.33794"
+     inkscape:cy="139.45237"
      inkscape:window-width="1366"
      inkscape:window-height="690"
      inkscape:window-x="0"
@@ -50,7 +50,7 @@
      id="layer1">
     <path
        style="fill:#ff0000;stroke:none;stroke-width:1.09015;stroke-dasharray:none"
-       d="m 50.402057,64.000002 c 0,0 -9.476907,-11.67658 0.63588,-22.80397 10.53558,-11.5926 14.90944,-19.28263 12.15826,-27.88779 C 58.380867,-1.7531058 35.99367,-5.1472198 27.515286,8.9328422 20.898662,-0.71968279 -6.2371847,2.8529482 1.3159913,28.322582 c 5.534151,18.6614 31.0734757,30.50634 49.0860657,35.67742 z"
+       d="m 50.402057,64.000002 c 0,0 -9.476907,-11.67658 0.63588,-22.80397 10.53558,-11.5926 11.633934,-22.015271 7.898014,-29.257155 C 54.454598,3.252012 36.90658,-4.5386132 27.515286,8.9328422 20.898662,-0.71968279 -6.2371847,2.8529482 1.3159913,28.322582 c 5.534151,18.6614 31.0734757,30.50634 49.0860657,35.67742 z"
        id="path2"
        sodipodi:nodetypes="csscsc" />
     <rect

@@ -1,0 +1,173 @@
+{% load static %}
+
+<script>
+function chatbot() {
+    return {
+        messages: {{ messages|safe|default:"[]" }},
+        error: '',
+        sendError: '',
+        currentMessage: '',
+        loading: false,
+
+        // Modal
+        showModal: false,
+        step: 1,
+        selectedGender: '{{ user.gender|default:"" }}',
+        name: '{{ user.name|default:"" }}',
+        girlfriend: '{{ user.girlfriend|default:"" }}',
+
+        
+        async sendMessage() {
+            if (!this.currentMessage.trim() || this.loading || !this.isValidToSend()) return;
+
+            // Remove the last user message if it error occurs
+            if (this.messages.length > 0) {
+                if (this.messages[this.messages.length - 1]['role'] === 'user' && this.error !== '') {
+                    this.messages.pop();
+                }
+            }
+            
+            const message = this.currentMessage.trim();
+            // reset state
+            this.sendError = '';
+            this.currentMessage = '';
+            this.loading = true;
+            this.error = '';
+
+            this.addMessage('user', message);
+
+            try {
+                // Send message to the server
+                const response = await fetch('{% url "send" %}', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': CSRFToken(),
+                    },
+                    body: JSON.stringify(
+                        {   
+                            role: "user",
+                            content: message,
+                        }
+                    )
+                });
+                
+                const data = await response.json();
+                
+                // add response to messages
+                if (data.status==='ok') {
+                    this.addMessage('assistant', data.message.content);
+
+                } else if (data.status==='rejected') {
+                    this.error = `Sorry, the message may contain bad words: "${data.words}".`;
+                } else {
+                    this.error= data.message ;
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                this.error = 'Network error. Please check your connection.';
+            } finally {
+                this.loading = false;
+                
+                this.$nextTick(() => {
+                    this.$refs.input.focus();
+                });
+            }
+        },
+
+
+
+        addMessage(role, content) {
+            this.messages.push({
+                role: role,
+                content: content
+            });
+            this.$nextTick(() => {
+                this.$refs.chatBox.scrollTop = this.$refs.chatBox.scrollHeight;
+                if (this.messages.length === 6) {
+                    this.step = 3;
+                    this.showModal = true;
+                }
+            });
+        },
+        
+
+        scrollToBottom() {
+            this.$nextTick(() => {
+                this.$refs.chatBox.scrollTo({
+                    top: this.$refs.chatBox.scrollHeight,
+                    behavior: 'smooth'
+                });
+            });
+        },
+
+
+        isValidToSend() {
+            if (this.currentMessage.length > 255) {
+                this.sendError = 'Message too long';
+                return false;
+            } else {
+                this.sendError = '';
+                return true;
+            }
+        },
+
+        // Modal methods
+        init() {
+            setTimeout(() => {
+                this.showModal = {% if first_time %}true{% else %}false{% endif %};
+            }, 300);
+        },
+        
+        selectGender(gender) {
+            this.selectedGender = gender;
+        },
+        
+        nextStep() {
+            if (this.selectedGender) {
+                this.step = 2;
+            }
+        },
+        
+        submitForm() {
+            if (this.name.trim() && this.girlfriend.trim()) {
+                try {
+                    fetch('{% url "create" %}', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRFToken': CSRFToken(),
+                        },
+                        body: JSON.stringify({
+                            gender: this.selectedGender,
+                            name: this.name,
+                            girlfriend: this.girlfriend,
+                        }),
+                    });
+                } catch (error) {
+                console.error('Error:', error);
+                this.error = 'Network error. Please check your connection.';
+                }
+                
+                this.showModal = false;
+            }
+        }
+
+    }
+}
+
+
+// Register service worker
+if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+        navigator.serviceWorker.register('{% static "sw.js" %}')
+            .then((registration) => {
+                console.log('SW registered: ', registration);
+            })
+            .catch((registrationError) => {
+                console.log('SW registration failed: ', registrationError);
+            });
+    });
+}
+
+</script>

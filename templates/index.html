@@ -1,20 +1,10 @@
-<!DOCTYPE html>
+{% extends "base.html" %}
 {% load static %}
-<html lang="en" class="scroll-smooth">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GF GPT - AI Girlfriend</title>
-    <meta name="author" content="Mohin Uddin Shipon">
-    <meta name="robots" content="index, follow">
-    <meta name="csrf-token" content="{{ csrf_token }}" >
-    <link rel="shortcut icon" href="{% static "icons/icon-32.png" %}" type="image/x-icon">
-    <link rel="manifest" href="{% static 'mainfest.json' %}">
-    <script src="{% static "tailwindcss.js" %}"></script>
-    <script src="{% static 'alpine.js' %}" defer></script>
-</head>
+
+
+{% block content %}
 <body x-data="chatbot()" class="h-dvh">
-    <div class="relative flex flex-col justify-between h-full max-w-2xl mx-auto w-full">
+    <div  x-data="installApp()" class="relative flex flex-col justify-between max-w-2xl mx-auto w-full h-full">
         <!-- Modal -->
         <div>
             <!-- Modal Overlay -->
@@ -107,21 +97,40 @@
                             <!-- Submit Button -->
                             <button type="submit"
                                     :disabled="!name.trim() && !girlfriend.trim()"
-                                    :class="name.trim() ? 'bg-green-500 hover:bg-green-600 text-white' : 'bg-gray-300 text-gray-500 cursor-not-allowed'"
+                                    :class="name.trim() && girlfriend.trim() ? 'bg-green-500 hover:bg-green-600 text-white' : 'bg-gray-300 text-gray-500 cursor-not-allowed'"
                                     class="py-2 px-5 rounded font-semibold transition-colors duration-200 mt-6">
                                 Finish
                             </button>
                         </form>
                     </div>
+
+                    <!-- Step 3: install app -->
+                    <div x-show="step === 3 || canInstall" class="p-6">
+                        <h2 class="text-2xl font-bold text-gray-800 mb-6 text-center">Install App</h2>
+                        <p class="text-gray-600 mb-6 text-center">Install the web app shortcut on your home screen.</p>
+                        <div class="flex items-center justify-end gap-4">
+                            <button @click="showModal = false" class="py-2 px-5 rounded font-semibold text-sm transition-colors duration-200 bg-gray-200 hover:bg-gray-300 text-gray-800">Not Now</button>
+                            <button 
+                                @click="install()" 
+                                :disabled="installing"
+                                class="py-2 px-5 rounded font-semibold text-sm transition-colors duration-200 bg-green-500 hover:bg-green-600 text-white"
+                            >
+                                <span x-text="installing ? 'Installing...' : 'Install App'"></span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- settings -->
+                    {% include "settings.html" %}
                 </div>
             </div>
         </div>
         <!-- Header -->
-        <header x-data="installApp()" class="relative flex items-center justify-between p-3 border-b border-gray-200">
+        <header class="sticky top-0 flex items-center shadow-sm sm:shadow-none justify-between p-3 border-gray-200">
             <div class="w-10 h-10"></div>
-            <div class="flex items-center justify-center">
+            <a href="/" class="flex items-center justify-center">
                 <h1 class="text-xl font-semibold text-gray-900 text-nowrap" aria-label="GF-GPT">GF <img class="inline-block w-6 h-6 mx-1" src="{% static 'icons/icon.svg' %}" alt="AI GF logo, cute heart icon"> GPT</h1>
-            </div>
+            </a>
             <!-- 3-dot Dropdown -->
             <div x-data="{ open: false }" class="relative">
                 <button @click="open = !open" class="p-2 rounded-full hover:bg-gray-100 focus:outline-none">
@@ -143,33 +152,35 @@
                     >
                         <span x-text="installing ? 'Installing...' : 'Install App'"></span>
                     </button>
-                    <a href="#" class="block px-4 py-2 text-gray-700 hover:bg-gray-100 text-sm">Settings</a>
-                    <a href="{% url 'clear' %}" class="block px-4 py-2 text-red-600 hover:bg-gray-100 text-sm">Clear Chat</a>
+                    <button @click="showModal = true; step = 4" class="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100 text-sm">Settings</button>
+                    <a href="{% url 'clear' %}" class="block px-4 py-2 text-red-600 hover:bg-gray-100 text-sm">Logout</a>
                 </div>
             </div>
         </header>
 
 
         <!-- Messages Container -->
-        <div x-ref="chatBox" x-init="scrollToBottom()" class="flex-1 p-4 pb-36 scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100"
-            :class="messages.length === 0 ? 'overflow-hidden' : 'overflow-y-auto'"
+        <div x-ref="chatBox" x-init="scrollToBottom()" class="flex-1 p-4"
+            :class="messages.length === 0 || showModal ? 'overflow-hidden' : 'overflow-y-auto'"
              style="scrollbar-width: thin; scrollbar-color: #cbd5e1 #f3f4f6;">
-            <!-- Empty Chat Placeholder -->
+            <!-- Empty State background -->
             <div x-show="messages.length === 0 && !loading" class="flex items-center justify-center h-full overflow-hidden">
                 <div class="text-center opacity-70 space-y-4">
                     <img src="{% static 'icons/icon.svg' %}" alt="AI GF Logo" class="w-20 h-20 mx-auto">
                     <h2 class="text-xl md:text-2xl font-semibold text-gray-400">
-                        Start messaging</br>your AI <span x-text="{% if gender %}'{{gender|lower}}'{% else %}selectedGender{% endif %} === 'girl' ? 'boyfriend' : 'girlfriend'"></span>.
+                        Start messaging</br>your AI <span x-text="{% if user.gender %}'{{user.gender|lower}}'{% else %}selectedGender{% endif %} === 'girl' ? 'boyfriend' : 'girlfriend'"></span>.
                     </h2>
-                    <p class="text-sm text-gray-500">Your AI partner is waiting to chat</p>
+                    <p class="text-sm text-gray-400">Keep your words polite.</p>
                 </div>
             </div>
 
+            <!-- Names -->
             <div x-show="messages.length != 0" class="flex items-center justify-between w-full text-gray-600 text-sm mb-4">
-                <span class="border-l-2 border-gray-200 pl-2">{{girlfriend}}</span>
-                <span class="border-r-2 border-gray-200 pr-2">{{name}}</span>
+                <span class="border-l-2 border-gray-200 pl-2" x-text="girlfriend"></span>
+                <span class="border-r-2 border-gray-200 pr-2" x-text="name"></span>
             </div>
 
+            <!-- Messages -->
             <template x-for="message in messages">
                 <div class="flex fadein duration-300 mb-4">
                     <div class="flex flex-wrap items-start space-x-3 w-full" :class="message.role === 'user' ? 'justify-end ml-6' : 'justify-start mr-6'">
@@ -199,7 +210,8 @@
             </div>
         </div>
 
-        <div class="fixed bottom-0 w-full max-w-2xl px-4  py-2 bg-white">
+        <!-- Input area -->
+        <div class="w-full max-w-2xl px-4  py-2 bg-white">
             <p x-text="sendError" class="text-sm text-red-600 m-2"></p>
             <div class="flex relative">
                 <input type="text"
@@ -207,7 +219,7 @@
                     @keydown.enter="sendMessage()"
                     onchange="isValidToSend()"
                     placeholder="Type your message..."
-                    class="flex-1 px-4 py-2 pr-12 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-300 focus:border-transparent"
+                    class="flex-1 min-w-0 px-4 py-2 pr-12 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-300 focus:border-transparent"
                     :disabled="loading"
                     x-ref='input'
                 >
@@ -224,163 +236,8 @@
             <p class="text-xs text-center text-gray-500 mt-2">created by <a target="_blank" class="underline" href="https://mohinuddinshipon.pythonanywhere.com" class="underline">Mohin Uddin Shipon</a></p>
         </div>
     </div>
-    <script>
-        function CSRFToken() {
-            const cookies = document.cookie.split(';');
-            for (let i = 0; i < cookies.length; i++) {
-                const cookie = cookies[i].trim();
-                if (cookie.startsWith('csrftoken=')) {
-                    return cookie.substring('csrftoken='.length);
-                }
-            }
-            return '';
-        }
-        function chatbot() {
-            return {
-                messages: {{ msg|safe|default:"''" }},
-                error: '',
-                sendError: '',
-                dwec: 0,
-                currentMessage: '',
-                loading: false,
-                
-                async sendMessage() {
-                    if (!this.currentMessage.trim() || this.loading) return;
-
-                    const message = this.currentMessage.trim();
-                    this.currentMessage = '';
-                    this.loading = true;
-                    this.error = '';
-
-                    console.log(this.messages[-1])
-
-                    this.addMessage('user', message);
-                    try {
-                        const response = await fetch('{% url "send" %}', {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json',
-                                'X-CSRFToken': CSRFToken(),
-                            },
-                            body: JSON.stringify(
-                                {   
-                                    messages: this.messages,
-                                }
-                            )
-                        });
-                        const data = await response.json();
-                        
-
-                        if (data.status==='ok') {
-                            this.addMessage('assistant', data.message.content);
-                        } else if (data.status==='rejected') {
-                            this.error = `Sorry, the message contains bad words: "${data.words}".`;
-                        } else {
-                            this.error='Sorry, an error';
-                        }
-                    } catch (error) {
-                        console.error('Error:', error);
-                        this.error = 'Sorry, an error';
-                    } finally {
-                        this.loading = false;
-                        this.$nextTick(() => {
-                            this.$refs.input.focus();
-                        });
-                    }
-                },
-
-
-
-                addMessage(role, content) {
-                    this.messages.push({
-                        role: role,
-                        content: content
-                    });
-                    this.$nextTick(() => {
-                        this.$refs.chatBox.scrollTop = this.$refs.chatBox.scrollHeight;
-                    });
-                },
-                
-
-                scrollToBottom() {
-                    this.$nextTick(() => {
-                        this.$refs.chatBox.scrollTo({
-                            top: this.$refs.chatBox.scrollHeight,
-                            behavior: 'smooth'
-                        });
-                    });
-                },
-
-
-                isValidToSend() {
-                    if (this.currentMessage.length > 255) {
-                        this.sendError = 'Message too long';
-                        return false;
-                    } else {
-                        this.sendError = '';
-                        return true;
-                    }
-                },
-
-                // Modal
-                showModal: false,
-                step: 1,
-                selectedGender: '',
-                name: '',
-                girlfriend: '',
-                
-                init() {
-                    setTimeout(() => {
-                        this.showModal = {% if first_time %}true{% else %}false{% endif %};
-                    }, 300);
-                },
-                
-                selectGender(gender) {
-                    this.selectedGender = gender;
-                },
-                
-                nextStep() {
-                    if (this.selectedGender) {
-                        this.step = 2;
-                    }
-                },
-                
-                submitForm() {
-                    if (this.name.trim() && this.girlfriend.trim()) {
-                        fetch('{% url "create" %}', {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json',
-                                'X-CSRFToken': CSRFToken(),
-                            },
-                            body: JSON.stringify({
-                                gender: this.selectedGender,
-                                name: this.name,
-                                girlfriend: this.girlfriend,
-                            }),
-                        });
-                        
-                        this.showModal = false;
-                    }
-                }
-
-            }
-        }
-
-        // Register service worker
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('{% static "sw.js" %}')
-                    .then((registration) => {
-                        console.log('SW registered: ', registration);
-                    })
-                    .catch((registrationError) => {
-                        console.log('SW registration failed: ', registrationError);
-                    });
-            });
-        }
-
-    </script>
+    {% include "chatbot.html" %}
+    <script src="{% static 'main.js' %}"></script>
     <script src="{% static 'install.js' %}"></script>
 </body>
-</html>
+{% endblock %}
