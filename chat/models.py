@@ -1,26 +1,68 @@
 from django.db import models
 
-# Create your models here.
+class Usr(models.Model):
+    languages = [
+        'বাংলা',
+        'Banglish',
+        'English',
+        'हिंदी',
+        'Hinglish',
+    ]
 
-class Msg(models.Model):
-    session = models.CharField(max_length=100)
-    msg = models.JSONField(null=True, blank=True)
-    name = models.CharField(max_length=100, null=True, blank=True)
-    girlfriend = models.CharField(max_length=100, null=True, blank=True)
+    use_emojis = [
+        'auto',
+        'yes',
+        'no',
+    ]
+
+    pronouns = {
+        'বাংলা': ['তুমি', 'তুই', 'আপনি'],
+        'Banglish': ['tumi', 'tui', 'apni'],
+        'English': ['you',],
+        'हिंदी': ['तुम', 'तू', 'आप'],
+        'Hinglish': ['tum', 'tu', 'aap'],
+    }
+
+    personalities = [
+        'friendly',
+        'respectful',
+        'responsive',
+    ]
+
+    tones = [
+        'romantic',
+        'flirty',
+        'funny',
+        'serious',
+        'sad',
+        'angry',
+        'helpful',
+    ]
+
     genders = (
         ("boy", "Boy"),
         ("girl", "Girl"),
     )
+
+
+    def default_usr_settings():
+        return {
+            "language": 'বাংলা',
+            "use_emojis": 'auto',
+            "pronoun": 'তুমি',
+            "personality": 'friendly',
+            "tone": 'romantic',
+        }
+
+    session = models.CharField(max_length=100)
+    messages = models.JSONField(null=True, blank=True)
+    name = models.CharField(max_length=100, null=True, blank=True)
+    girlfriend = models.CharField(max_length=100, null=True, blank=True)
+
     gender = models.CharField(max_length=100, null=True, blank=True , choices=genders)
 
     # settings
-    settings = models.JSONField(null=True, blank=True, default={
-        "language": 'bangla',
-        "useEmojis": 'auto',
-        "pronoun": 'তুমি',
-        "personality": 'flirty',
-        "theme": 'romantic',
-    })
+    settings = models.JSONField(default= default_usr_settings)
 
     # tracking
     ip_address = models.GenericIPAddressField(null=True, blank=True)
@@ -49,4 +91,24 @@ class APIKey(models.Model):
 
     def __str__(self):
         return self.key
+    
+class APIRequest(models.Model):
+    '''
+    A model to track gemini API requests
+    '''
+    usr = models.ForeignKey(Usr, null=True, on_delete=models.SET_NULL, related_name='api_requests')
+
+    ip_address = models.GenericIPAddressField(null=True, blank=True)
+    api_key_index = models.IntegerField(default=0)
+    model_name = models.CharField(max_length=100, null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True, null=True, blank=True)
+    updated_at = models.DateTimeField(auto_now=True, null=True, blank=True)
+
+    class Meta:
+        verbose_name = 'API Request'
+        verbose_name_plural = 'API Requests'
+        ordering = ['-updated_at', '-created_at']
+
+    def __str__(self):
+        return f'Session: {self.session}'
     

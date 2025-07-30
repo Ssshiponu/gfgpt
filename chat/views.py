@@ -1,52 +1,39 @@
 
 from django.http import JsonResponse
-from .models import Msg
+from .models import Usr
 from django.shortcuts import render, redirect
 from .ai import ai
 from .profanity import check_profanity
 import json
-import requests
 from .utils import *
+from django.conf import settings as st
 
-languages = {
-    'bangla': 'বাংলা',
-    'banglish': 'Banglish',
-    'english': 'English',
-    'hindi': 'हिंदी',
-    'hindlish': 'Hinglish',
-}
-
-use_emojis = {
-    'auto': 'Auto',
-    'yes': 'Yes',
-    'no': 'No',
-}
-
-pronouns = {
-    'bangla': ['তুমি, তোমার', 'তুই, তোর', 'আপনি, আপনার'],
-    'banglish': ['tumi, tomar', 'tui, tor', 'apni, apnar'],
-    'english': ['you, your'],
-    'hindi': ['तुम, तुम्हारा', 'तू, तेरा', 'आप, आपके'],
-    'hindlish': ['tum, tumhara', 'tu, tera', 'aap, aapke'],
-}
 
 def chat(requests):
-    remove_empty_msgs()
-    user, first_time = get_or_create_msg(requests)
-    messages = user.msg if user.msg is not None else []
-    context = {'user': user, 'messages': messages, 'first_time': first_time,
-               'languages': languages, 'use_emojis': use_emojis, 'pronouns': pronouns}
-    
+    remove_empty_usrs()
+    user, first_time = get_or_create_usr(requests)
+    messages = user.messages if user.messages is not None else []
+
+    context = {'user': user,
+               'messages': messages,
+               'settings': user.settings,
+               'first_time': first_time,
+               'languages': Usr.languages,
+               'use_emojis': Usr.use_emojis,
+               'pronouns': Usr.pronouns,
+               'personalities': Usr.personalities,
+               'tones': Usr.tones}
+
     return render(requests, 'index.html', context)
 
 
 def send(requests):
     if requests.method == 'POST':
-        user, _ = get_or_create_msg(requests)
-        messages = user.msg if user.msg is not None else []
+        user, _ = get_or_create_usr(requests)
+        messages = user.messages if user.messages is not None else []
         data = json.loads(requests.body)
-        ai_request = str(messages[-30:] + [data])
         message = data["content"]
+        ai_request = str(messages[-(st.MAX_REMEMBERED_MESSAGES):] + [data])
         try: 
             # Check profanity
             is_bad, words = check_profanity(message)
@@ -65,8 +52,10 @@ def send(requests):
             }
             messages.append(data)
             messages.append(response['message'])
-            user.msg = messages
+            user.messages = messages
             user.save()
+            print(f"User: {message}")
+            print(f"AI: {ai_response}")
             return JsonResponse(response)
             
         except Exception as e:
@@ -81,23 +70,60 @@ def clear(requests):
 
 def create(requests):
     if requests.method == 'POST':
-        user, _ = get_or_create_msg(requests)
+        user, _ = get_or_create_usr(requests)
         data = json.loads(requests.body)
         user.gender = data["gender"]
         user.name = data["name"]
         user.girlfriend = data["girlfriend"]
-        user.settings = {
-            "language": 'bangla',
-            "useEmojis": 'auto',
-            "pronoun": 'tumi',
-            "personality": 'friendly',
-            "theme": 'romantic',
-        }
+        user.settings = Usr.default_usr_settings()
         user.ip_address = get_ip(requests)
+        user.geo_location = get_geo_location(user.ip_address)
         user.save()
         return JsonResponse({'status': 'ok'})
     
     return JsonResponse({'status': 'error'})
 
 
-    
+def settings(request):
+    if request.method == 'POST':
+        user, _ = get_or_create_usr(request)
+        try:
+            data = json.loads(request.body)
+            form_action = data.get("formAction")
+            language = data.get("language", "")
+            use_emojis = data.get("use_emojis", "")
+            pronoun = data.get("pronoun", "")
+            personality = data.get("personality", "")
+            tone = data.get("tone", "")
+
+            # Validate the data
+            if language not in Usr.languages:
+                return JsonResponse({'status': 'error', 'message': 'Invalid language.'})
+            if use_emojis not in Usr.use_emojis:
+                return JsonResponse({'status': 'error', 'message': 'Invalid emoji preference.'})
+            if pronoun not in Usr.pronouns[language]:
+                print(pronoun, Usr.pronouns[language])
+                return JsonResponse({'status': 'error', 'message': 'Invalid pronoun.'})
+            if personality not in Usr.personalities:
+                return JsonResponse({'status': 'error', 'message': 'Invalid personality.'})
+            if tone not in Usr.tones:
+                return JsonResponse({'status': 'error', 'message': 'Invalid tone.'})
+
+            if form_action == 'update':
+                user.settings = {
+                    "language": language,
+                    "use_emojis": use_emojis,
+                    "pronoun": pronoun,
+                    "personality": personality,
+                    "tone": tone
+                }
+                
+            elif form_action == 'reset':
+                user.settings = Usr.default_usr_settings()
+            user.save()
+            return JsonResponse({'status': 'ok', 'message': 'Settings updated successfully.'})
+        except Exception as e:
+            print(e)
+            return JsonResponse({'status': 'error', 'message': 'Invalid data or server error.'})
+
+    return JsonResponse({'status': 'error', 'message': 'Invalid request method.'})

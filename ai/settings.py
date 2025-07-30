@@ -108,3 +108,8 @@ STATIC_ROOT = BASE_DIR / 'staticfiles'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 API_KEYS = os.getenv('API_KEYS', '').split(',')
+
+# custom settings
+USER_REQUEST_LIMIT = 50
+
+MAX_REMEMBERED_MESSAGES = 30
