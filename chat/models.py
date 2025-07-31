@@ -110,5 +110,5 @@ class APIRequest(models.Model):
         ordering = ['-updated_at', '-created_at']
 
     def __str__(self):
-        return f'Session: {self.session}'
+        return f'IP:{self.ip_address}, KEY:{self.api_key_index}, MODEL:{self.model_name}'
     

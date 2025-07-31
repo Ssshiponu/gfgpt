@@ -16,7 +16,6 @@ function chatbot() {
         name: '{{ user.name|default:"" }}',
         girlfriend: '{{ user.girlfriend|default:"" }}',
 
-        
         async sendMessage() {
             if (!this.currentMessage.trim() || this.loading || !this.isValidToSend()) return;
 
@@ -65,13 +64,10 @@ function chatbot() {
                 }
             } catch (error) {
                 console.error('Error:', error);
-                this.error = 'Network error. Please check your connection.';
+                this.error = 'Error. Please try again';
             } finally {
                 this.loading = false;
-                
-                this.$nextTick(() => {
-                    this.$refs.input.focus();
-                });
+                this.scrollToBottom();
             }
         },
 
@@ -146,7 +142,7 @@ function chatbot() {
                     });
                 } catch (error) {
                 console.error('Error:', error);
-                this.error = 'Network error. Please check your connection.';
+                this.error = 'Error. Please try again';
                 }
                 
                 this.showModal = false;

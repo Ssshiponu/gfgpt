@@ -6,5 +6,5 @@ urlpatterns = [
     path('send/', views.send, name='send'),
     path('clear/', views.clear, name='clear'),
     path('create/', views.create, name='create'),
-    path('settings/', views.settings, name='settings'),
+    path('settings/', views.user_settings, name='settings'),
 ]

@@ -14,4 +14,4 @@ function formate(text) {
     return text.replace(/(\r\n|\n|\r)/gm, "<br>");
 }
 
-
+document.createElement("iframe").allow="unload";

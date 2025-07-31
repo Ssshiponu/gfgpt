@@ -7,13 +7,17 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 dotenv.load_dotenv(os.path.join(BASE_DIR, '.env'))
 
-SECRET_KEY = os.getenv('SECRET_KEY').split(', ')
+SECRET_KEY = os.getenv('SECRET_KEY')
 
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ['gfgpt.pythonanywhere.com']
 
-CSRF_TRUSTED_ORIGINS = [ 'https://0b6c073f7d37.ngrok-free.app' ]
+CSRF_TRUSTED_ORIGINS = [ 'https://gfgpt.pythonanywhere.com' ]
+
+# CSRF_COOKIE_SECURE = True
+
+# SESSION_COOKIE_SECURE = True
 
 
 # Application definition
@@ -110,6 +114,6 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 API_KEYS = os.getenv('API_KEYS', '').split(',')
 
 # custom settings
-USER_REQUEST_LIMIT = 50
+USER_REQUEST_LIMIT = 60
 
 MAX_REMEMBERED_MESSAGES = 30

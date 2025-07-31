@@ -1,17 +1,19 @@
 
 from django.http import JsonResponse
+from django.utils.html import escape
 from .models import Usr
 from django.shortcuts import render, redirect
 from .ai import ai
 from .profanity import check_profanity
 import json
 from .utils import *
-from django.conf import settings as st
+from django.conf import settings
 
 
 def chat(requests):
     remove_empty_usrs()
     user, first_time = get_or_create_usr(requests)
+    
     messages = user.messages if user.messages is not None else []
 
     context = {'user': user,
@@ -28,23 +30,33 @@ def chat(requests):
 
 
 def send(requests):
+    if not validate_session(requests):
+        return JsonResponse({'status': 'error', 'message': 'Invalid session'})
+
     if requests.method == 'POST':
         user, _ = get_or_create_usr(requests)
         messages = user.messages if user.messages is not None else []
         data = json.loads(requests.body)
-        message = data["content"]
-        ai_request = str(messages[-(st.MAX_REMEMBERED_MESSAGES):] + [data])
+        message = escape(data["content"])
+        ai_request = str(messages[-(settings.MAX_REMEMBERED_MESSAGES):] + [data])
+
+        print(len(settings.API_KEYS))
         try: 
             # Check profanity
             is_bad, words = check_profanity(message)
             if is_bad:
                 return JsonResponse({'status': 'rejected', 'words': words})
+            
+            if not has_limit(user):
+                return JsonResponse({'status': 'error', 'message': 'Your daily message limit has been reached. Please try again tomorrow.'})
 
-            ai_response = str(ai(ai_request, user))
+            raw_ai_response = ai(ai_request, user)
 
             # check if AI response is empty
-            if ai_response == '' or ai_response is None:
-                return JsonResponse({'status': 'error', 'message': 'AI response is empty.'})
+            if raw_ai_response is None:
+                return JsonResponse({'status': 'error', 'message': 'No Response.'})
+            
+            ai_response = str(raw_ai_response)
             
             response = {
                 'status': 'ok',
@@ -65,16 +77,22 @@ def send(requests):
     return JsonResponse({'status': 'error', 'message': 'Invalid request method.'})
 
 def clear(requests):
+    if not validate_session(requests):
+        return JsonResponse({'status': 'error', 'message': 'Invalid session'})
+
     requests.session.flush()
     return redirect('/')
 
 def create(requests):
+    if not validate_session(requests):
+        return JsonResponse({'status': 'error', 'message': 'Invalid session'})
+
     if requests.method == 'POST':
         user, _ = get_or_create_usr(requests)
         data = json.loads(requests.body)
-        user.gender = data["gender"]
-        user.name = data["name"]
-        user.girlfriend = data["girlfriend"]
+        user.gender = data["gender"] if data["gender"] in ['boy', 'girl'] else 'girl'
+        user.name = data["name"] if len(data["name"]) <= 20 else ''
+        user.girlfriend = data["girlfriend"] if len(data["girlfriend"]) <= 20 else ''
         user.settings = Usr.default_usr_settings()
         user.ip_address = get_ip(requests)
         user.geo_location = get_geo_location(user.ip_address)
@@ -84,7 +102,10 @@ def create(requests):
     return JsonResponse({'status': 'error'})
 
 
-def settings(request):
+def user_settings(request):
+    if not validate_session(requests):
+        return JsonResponse({'status': 'error', 'message': 'Invalid session'})
+
     if request.method == 'POST':
         user, _ = get_or_create_usr(request)
         try:

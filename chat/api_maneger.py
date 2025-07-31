@@ -4,22 +4,21 @@ from django.utils import timezone
 
 api_keys = settings.API_KEYS
 
-user_request_limit = settings.USER_REQUEST_LIMIT
-
 # AI models limit
 ai_models = {
-    # 'gemini-2.5-pro': {
-    #     'rpm': 5,
-    #     'rpd': 100
-    # },
+
     'gemini-2.5-flash': {
         'rpm': 10,
         'rpd': 250
     },
-    'gemini-2.5-flash-lite': {
-        'rpm': 15,
-        'rpd': 1000
+    'gemini-2.5-pro': {
+        'rpm': 5,
+        'rpd': 100
     },
+    # 'gemini-2.5-flash-lite': {
+    #     'rpm': 3,
+    #     'rpd': 1000
+    # },
 }
 
 # main function to get the API key and model name based on the limits
@@ -47,15 +46,10 @@ def get_counts(model_name, api_key_index):
         rpm_count=Count('id', filter=Q(created_at__gte=now - timezone.timedelta(minutes=1))),
         rpd_count=Count('id', filter=Q(created_at__gte=now - timezone.timedelta(hours=24)))
     )
+
+    print('counts:',counts)
     
     return counts['rpm_count'], counts['rpd_count']
 
-def has_limit(user):
-    # count user requests in last 24 hours
-    count = APIRequest.objects.filter(
-        created_at__gte=timezone.now() - timezone.timedelta(hours=24),
-        usr__ip_address=user.ip_address
-    ).count()
 
-    return count >= user_request_limit
 

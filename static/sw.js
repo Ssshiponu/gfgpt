@@ -1,4 +1,4 @@
-const CACHE_NAME = 'pwa-app-v1';
+const CACHE_NAME = 'gfgpt-v2.0.0';
 const urlsToCache = [
   '/',
   '/static/tailwindcss.js',
@@ -6,7 +6,8 @@ const urlsToCache = [
   '/static/manifest.json',
   '/static/icons/icon-192.png',
   '/static/icons/icon-512.png',
-  // Add other assets you want to cache
+  '/static/style.css',
+  '/static/main.js'
 ];
 
 // Install event - cache resources
