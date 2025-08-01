@@ -114,7 +114,7 @@
                         <div class="flex items-center justify-end gap-4">
                             <button @click="showModal = false" class="py-2 px-5 rounded font-semibold text-sm transition-colors duration-200 bg-gray-200 hover:bg-gray-300 text-gray-800">Not Now</button>
                             <button 
-                                @click="install()" 
+                                @click="install(); showModal = false" 
                                 :disabled="installing"
                                 class="py-2 px-5 rounded font-semibold text-sm transition-colors duration-200 bg-green-500 hover:bg-green-600 text-white"
                             >
