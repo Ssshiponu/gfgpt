@@ -1,6 +1,8 @@
 from .models import APIRequest
 from django.conf import settings
 from django.utils import timezone
+from django.db.models import Count, Q
+
 
 api_keys = settings.API_KEYS
 
@@ -24,8 +26,8 @@ ai_models = {
 # main function to get the API key and model name based on the limits
 def get_key_model():
 
-    for api_key_index, api_key in enumerate(api_keys):
-       for name, limit in ai_models.items():
+    for name, limit in ai_models.items():
+        for api_key_index, api_key in enumerate(api_keys):
             rpm, rpd = get_counts(name, api_key_index)
             if rpm < limit['rpm'] and rpd < limit['rpd']:
                 return api_key, name
@@ -37,7 +39,6 @@ def get_counts(model_name, api_key_index):
     now = timezone.now()
     
     # Get both counts in one query with aggregation
-    from django.db.models import Count, Q
     
     counts = APIRequest.objects.filter(
         api_key_index=api_key_index, 
@@ -47,8 +48,6 @@ def get_counts(model_name, api_key_index):
         rpd_count=Count('id', filter=Q(created_at__gte=now - timezone.timedelta(hours=24)))
     )
 
-    print('counts:',counts)
-    
     return counts['rpm_count'], counts['rpd_count']
 
 

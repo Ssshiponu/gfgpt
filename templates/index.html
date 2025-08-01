@@ -26,7 +26,7 @@
                     x-transition:leave="transition ease-in duration-200"
                     x-transition:leave-start="opacity-100 transform scale-100"
                     x-transition:leave-end="opacity-0 transform scale-95"
-                    class="bg-white rounded-xl shadow-xl max-w-md w-full max-h-[90vh] overflow-hidden">
+                    class="bg-white rounded-xl shadow-xl max-w-md w-full max-h-[90vh] overflow-y-auto">
                     
                     <!-- Step 1: Gender Selection -->
                     <div x-show="step === 1" class="p-6 flex flex-col items-end">
@@ -208,7 +208,7 @@
             <!-- Names -->
             <div x-show="messages.length != 0" class="flex items-center justify-between w-full text-gray-600 text-sm mb-4">
                 <span class="border-l-2 border-gray-200 pl-2" x-text="girlfriend"></span>
-                <span class="border-r-2 border-gray-200 pr-2" x-text="name"></span>
+                <span class="border-r-2 border-gray-200 pr-2 text-right" x-text="name"></span>
             </div>
 
             <!-- Messages -->

@@ -13,7 +13,6 @@ def ai(context, user):
 
     system_instruction = prompt(user)
     api_key, model = get_key_model()
-    print(model, settings.API_KEYS.index(api_key))
 
     try:
         client = genai.Client(api_key=api_key)

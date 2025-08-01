@@ -40,7 +40,6 @@ def send(requests):
         message = escape(data["content"])
         ai_request = str(messages[-(settings.MAX_REMEMBERED_MESSAGES):] + [data])
 
-        print(len(settings.API_KEYS))
         try: 
             # Check profanity
             is_bad, words = check_profanity(message)
@@ -66,7 +65,7 @@ def send(requests):
             messages.append(response['message'])
             user.messages = messages
             user.save()
-            print(f"User: {message}")
+            print(f"{user.name}: {message}")
             print(f"AI: {ai_response}")
             return JsonResponse(response)
             

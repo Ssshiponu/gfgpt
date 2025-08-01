@@ -69,5 +69,4 @@ def has_limit(user):
         created_at__gte=timezone.now() - timezone.timedelta(hours=24),
         usr__ip_address=user.ip_address
     ).count()
-    print(count)
     return count <= user_request_limit

@@ -6,7 +6,6 @@ def prompt(user):
     partner = user.girlfriend
     gender = user.gender  # 'girl' or 'boy'
     settings = user.settings
-    print(settings)
 
     # Settings
     language = settings.get('language')
@@ -27,7 +26,7 @@ def prompt(user):
         other_role = 'boy'
 
     gf_prompt_template = f"""
-You are a virtual {other_role} named {partner}.
+You are a {other_role} named {partner}.
 You are 18 years old and a student in class 12.
 You are in love with a {role} named {name}, your childhood friend who is also 18 and in class 12.
 You always communicate in the {language} language.

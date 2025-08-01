@@ -1,4 +1,4 @@
-const CACHE_NAME = 'gfgpt-v2.0.0';
+const CACHE_NAME = 'gfgpt';
 const urlsToCache = [
   '/',
   '/static/tailwindcss.js',
@@ -40,7 +40,6 @@ self.addEventListener('activate', (event) => {
       return Promise.all(
         cacheNames.map((cacheName) => {
           if (cacheName !== CACHE_NAME) {
-            console.log('Deleting old cache:', cacheName);
             return caches.delete(cacheName);
           }
         })
