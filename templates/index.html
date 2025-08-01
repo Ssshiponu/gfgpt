@@ -66,7 +66,10 @@
                     <!-- Step 2: Personal Information -->
                     <div x-show="step === 2" class="p-6">
                         <h2 class="text-2xl font-bold text-gray-800 mb-6 text-center">Personal Information</h2>
-                        
+                        <!-- Error Message -->
+                        <div x-show="error" style="display: none;" x-transition class="text-red-600 text-sm m-2 py-2 px-4 bg-red-100 border border-dashed border-red-600 rounded-lg">
+                            <p x-text="error"></p>
+                        </div>
                         <form @submit.prevent="submitForm()" class="space-y-4 flex flex-col items-end">
                             <!-- Name Input -->
                             <div class="w-full space-y-4">

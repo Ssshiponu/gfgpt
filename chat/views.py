@@ -90,20 +90,34 @@ def create(requests):
     if requests.method == 'POST':
         user, _ = get_or_create_usr(requests)
         data = json.loads(requests.body)
-        user.gender = data["gender"] if data["gender"] in ['boy', 'girl'] else 'girl'
-        user.name = data["name"] if len(data["name"]) <= 20 else ''
-        user.girlfriend = data["girlfriend"] if len(data["girlfriend"]) <= 20 else ''
+
+        validation_cases = [
+            (data["gender"].lower() not in ["boy", "girl"], "Invalid gender."),
+            (len(data["name"]) < 3, "Name is too short."),
+            (len(data["girlfriend"]) < 3, "Girlfriend name is too short."),
+            (len(data["name"]) > 20, "Name is too long."),
+            (len(data["girlfriend"]) > 20, "Girlfriend name is too long.")
+        ]
+
+        for case, message in validation_cases:
+            if case:
+                return JsonResponse({'status': 'error', 'message': message})
+            
+        user.gender = data["gender"]
+        user.name = data["name"]
+        user.girlfriend = data["girlfriend"]
         user.settings = Usr.default_usr_settings()
         user.ip_address = get_ip(requests)
         user.geo_location = get_geo_location(user.ip_address)
         user.save()
+        print(f'User created: {user.name}, {user.girlfriend}' )
         return JsonResponse({'status': 'ok'})
     
-    return JsonResponse({'status': 'error'})
+    return JsonResponse({'status': 'error', 'message': 'Invalid request method.'})
 
 
 def user_settings(request):
-    if not validate_session(requests):
+    if not validate_session(request):
         return JsonResponse({'status': 'error', 'message': 'Invalid session'})
 
     if request.method == 'POST':
@@ -118,17 +132,16 @@ def user_settings(request):
             tone = data.get("tone", "")
 
             # Validate the data
-            if language not in Usr.languages:
-                return JsonResponse({'status': 'error', 'message': 'Invalid language.'})
-            if use_emojis not in Usr.use_emojis:
-                return JsonResponse({'status': 'error', 'message': 'Invalid emoji preference.'})
-            if pronoun not in Usr.pronouns[language]:
-                print(pronoun, Usr.pronouns[language])
-                return JsonResponse({'status': 'error', 'message': 'Invalid pronoun.'})
-            if personality not in Usr.personalities:
-                return JsonResponse({'status': 'error', 'message': 'Invalid personality.'})
-            if tone not in Usr.tones:
-                return JsonResponse({'status': 'error', 'message': 'Invalid tone.'})
+            validation_cases = [
+                (language not in Usr.languages, 'Invalid language.'),
+                (use_emojis not in Usr.use_emojis, 'Invalid emoji preference.'),
+                (pronoun not in Usr.pronouns.get(language, []), 'Invalid pronoun.'),
+                (personality not in Usr.personalities, 'Invalid personality.'),
+                (tone not in Usr.tones, 'Invalid tone.')
+            ]
+            for case, message in validation_cases:
+                if case:
+                    return JsonResponse({'status': 'error', 'message': message})
 
             if form_action == 'update':
                 user.settings = {
