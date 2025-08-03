@@ -65,6 +65,8 @@ def get_geo_location(ip_address):
 
 def has_limit(user):
     # count user requests in last 24 hours
+    if user.ip_address == '127.0.0.1':
+        return True
     count = APIRequest.objects.filter(
         created_at__gte=timezone.now() - timezone.timedelta(hours=24),
         usr__ip_address=user.ip_address

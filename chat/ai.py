@@ -7,12 +7,32 @@ from .utils import create_api_request
 
 
 def ai(context, user):
-    """
-    Generate AI response using Google Gemini API.
-    """
-
+    """Generate AI response using Google Gemini API."""
+    
     system_instruction = prompt(user)
     api_key, model = get_key_model()
+    
+    # Try primary API key
+    response = get_response(api_key, model, system_instruction, context)
+    if response:
+        create_api_request(user, model, settings.API_KEYS.index(api_key), user.ip_address)
+        return response
+    
+    # Try other API keys if primary fails
+    for key in settings.API_KEYS:
+        if key == api_key:
+            continue
+        response = get_response(key, model, system_instruction, context)
+        if response:
+            create_api_request(user, model, settings.API_KEYS.index(key), user.ip_address)
+            return response
+    
+    return None
+
+
+def get_response(api_key, model, system_instruction, context):
+    """Get response from Gemini API."""
+    print(settings.API_KEYS.index(api_key))
 
     try:
         client = genai.Client(api_key=api_key)
@@ -20,22 +40,12 @@ def ai(context, user):
             model=model,
             config=types.GenerateContentConfig(
                 system_instruction=system_instruction,
-                #thinking_config=types.ThinkingConfig(thinking_budget=0),
                 response_modalities=["text"],
                 response_mime_type="text/plain",
             ),
             contents=context
         )
-        if response.text is not None:
-            create_api_request(
-                usr=user,
-                model_name=model,
-                api_key_index=settings.API_KEYS.index(api_key),
-                ip_address=user.ip_address
-            )
-            return response.text
-        
+        return response.text if response.text else None
     except Exception as e:
         print(e)
-
-    return None
+        return None

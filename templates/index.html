@@ -215,11 +215,11 @@
             <template x-for="(message, idx) in messages" :key="idx">
                 <div 
                     x-transition
-                    class="flex duration-300 mb-4"
+                    class="flex duration-300 mb-1.5"
                 >
                     <div class="flex flex-wrap items-start w-full" :class="message.role === 'user' ? 'justify-end ml-6' : 'justify-start mr-6'">
-                        <div class="text-gray-700 px-3 py-2 rounded-lg"
-                            :class="message.role === 'user' ? 'bg-gray-100' : 'bg-white border border-gray-200'"
+                        <div class="text-gray-600 px-3 py-1 rounded-lg"
+                            :class="message.role === 'user' ? 'bg-gray-100' : 'bg-white border border-gray-100'"
                             x-transition:enter="transition ease-out duration-200"
                             x-transition:enter-start="opacity-0 transform translate-y-2"
                             x-transition:enter-end="opacity-100 transform translate-y-0">
