@@ -9,7 +9,7 @@ dotenv.load_dotenv(os.path.join(BASE_DIR, '.env'))
 
 SECRET_KEY = os.getenv('SECRET_KEY')
 
-DEBUG = os.getenv('DEBUG', False)
+DEBUG = os.getenv('DEBUG', 'False') == 'True'
 
 ALLOWED_HOSTS = ['gfgpt.pythonanywhere.com', '127.0.0.1', '192.168.0.105']
 
