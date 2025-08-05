@@ -7,7 +7,7 @@ from .models import Usr, APIKey, APIRequest
 
 @admin.register(Usr)
 class UsrAdmin(admin.ModelAdmin):
-    list_display = ['name', 'girlfriend', 'gender', 'session_short', 'language_setting', 'created_at']
+    list_display = ['name', 'girlfriend', 'gender', 'language_setting','updated_at', 'created_at']
     list_filter = ['gender', 'created_at', 'updated_at']
     search_fields = ['name', 'girlfriend', 'session']
     readonly_fields = ['created_at', 'updated_at', 'messages_display']
