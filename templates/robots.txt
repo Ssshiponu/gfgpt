@@ -1,5 +1,9 @@
 User-agent: *
 Disallow: /admin/
+Disallow: /send/
+Disallow: /clear/
+Disallow: /create/
+Disallow: /settings/
 Allow: /
 
 Sitemap: https://gfgpt.pythonanywhere.com/sitemap.xml
