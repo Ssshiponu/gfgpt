@@ -9,13 +9,14 @@ dotenv.load_dotenv(os.path.join(BASE_DIR, '.env'))
 
 SECRET_KEY = os.getenv('SECRET_KEY')
 
-DEBUG = True
+DEBUG = os.getenv('DEBUG', False)
 
 ALLOWED_HOSTS = ['gfgpt.pythonanywhere.com', '127.0.0.1', '192.168.0.105']
 
 CSRF_TRUSTED_ORIGINS = [ 'https://gfgpt.pythonanywhere.com' ]
 
 CSRF_COOKIE_SECURE = not DEBUG
+
 SESSION_COOKIE_SECURE = not DEBUG
 
 
