@@ -41,6 +41,9 @@ def chat(requests):
                'description': seo.description,
                'keywords': seo.keywords,
                'author': seo.author,
+
+               'url': requests.build_absolute_uri('/'),
+               'share_text': 'Check out this cool app!',
                }
 
     return render(requests, 'index.html', context)

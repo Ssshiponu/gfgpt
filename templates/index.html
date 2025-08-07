@@ -136,7 +136,7 @@
         <header class="sticky top-0 h-16 bg-white flex items-center shadow-sm sm:shadow-none justify-between p-3 border-gray-200">
             <div class="w-10 h-10"></div>
             <a href="/" class="flex items-center justify-center">
-                <h1 class="text-xl font-semibold text-gray-900 text-nowrap" aria-label="GF GPT">GF <img class="inline-block w-6 h-6 mx-1" src="{% static 'icons/icon.svg' %}" alt="GF GPT logo, cute heart icon with eyes"> GPT</h1>
+                <h1 class="text-xl font-semibold text-gray-900 text-nowrap" aria-label="GF GPT">GF <img class="inline-block w-6 h-6 mx-1" src="{% static 'icons/icon.svg' %}" alt="{{ name }} logo, cute heart icon with eyes"> GPT</h1>
             </a>
             <!-- Dropdown -->
             <div x-data="{ open: false }" class="relative">
@@ -198,7 +198,7 @@
             <!-- Empty State background -->
             <div x-show="messages.length === 0 && !loading" class="flex items-center justify-center z-10 h-full overflow-hidden">
                 <div class="text-center space-y-4">
-                    <img src="{% static 'icons/icon.svg' %}" alt="GF GPT logo" class="w-20 h-20 mx-auto">
+                    <img src="{% static 'icons/icon.svg' %}" alt="{{ name }} logo, cute heart icon with eyes" class="w-20 h-20 mx-auto">
                     <h2 class="text-xl md:text-2xl font-semibold text-gray-400">
                         Start messaging</br>your AI <span x-text="{% if user.gender %}'{{user.gender|lower}}'{% else %}selectedGender{% endif %} === 'girl' ? 'boyfriend' : 'girlfriend'"></span>.
                     </h2>

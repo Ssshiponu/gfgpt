@@ -5,7 +5,7 @@
     <div class="grid grid-cols-4 gap-4 mb-6">
 
         <!-- X - Twitter -->
-        <a :href="twitterUrl" class="flex flex-col items-center justify-center gap-1.5 text-gray-600" target="_blank">
+        <a href="https://twitter.com/intent/tweet?url={{ url|urlencode }}&text={{ share_text|urlencode }}" class="flex flex-col items-center justify-center gap-1.5 text-gray-600" target="_blank">
             <div class="w-fits flex items-center justify-center size-10 rounded-full bg-black p-2">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true" class="size-5 text-white">
                     <path d="M12.6.75h2.454l-5.36 6.142L16 15.25h-4.937l-3.867-5.07-4.425 5.07H.316l5.733-6.57L0 .75h5.063l3.495 4.633L12.601.75Zm-.86 13.028h1.36L4.323 2.145H2.865z" />
@@ -15,7 +15,7 @@
         </a>
 
         <!-- Facebook -->
-        <a :href="facebookUrl" class="flex flex-col items-center justify-center gap-1.5 text-gray-600" target="_blank">
+        <a href="https://www.facebook.com/sharer/sharer.php?u={{ url|urlencode }}&quote={{ share_text|urlencode }}" class="flex flex-col items-center justify-center gap-1.5 text-gray-600" target="_blank">
             <div class="w-fits flex items-center justify-center size-10 rounded-full bg-blue-500 p-2">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true" class="size-6 text-white">
                     <path d="M16 8.049c0-4.446-3.582-8.05-8-8.05C3.58 0-.002 3.603-.002 8.05c0 4.017 2.926 7.347 6.75 7.951v-5.625h-2.03V8.05H6.75V6.275c0-2.017 1.195-3.131 3.022-3.131.876 0 1.791.157 1.791.157v1.98h-1.009c-.993 0-1.303.621-1.303 1.258v1.51h2.218l-.354 2.326H9.25V16c3.824-.604 6.75-3.934 6.75-7.951" />
@@ -25,7 +25,7 @@
         </a>
 
         <!-- whatsapp -->
-        <a :href="whatsappUrl" class="flex flex-col items-center justify-center gap-1.5 text-gray-600" target="_blank">
+        <a href="https://api.whatsapp.com/send?text={{ share_text|urlencode }}%20{{ url|urlencode }}" class="flex flex-col items-center justify-center gap-1.5 text-gray-600" target="_blank">
             <div class="w-fits flex items-center justify-center size-10 rounded-full bg-green-600 p-2">
                 <svg xmlns="http://www.w3.org/2000/svg" class="size-6 fill-white" viewBox="0 0 448 512"><!--!Font Awesome Free v7.0.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2025 Fonticons, Inc.--><path d="M380.9 97.1c-41.9-42-97.7-65.1-157-65.1-122.4 0-222 99.6-222 222 0 39.1 10.2 77.3 29.6 111L0 480 117.7 449.1c32.4 17.7 68.9 27 106.1 27l.1 0c122.3 0 224.1-99.6 224.1-222 0-59.3-25.2-115-67.1-157zm-157 341.6c-33.2 0-65.7-8.9-94-25.7l-6.7-4-69.8 18.3 18.6-68.1-4.4-7c-18.5-29.4-28.2-63.3-28.2-98.2 0-101.7 82.8-184.5 184.6-184.5 49.3 0 95.6 19.2 130.4 54.1s56.2 81.2 56.1 130.5c0 101.8-84.9 184.6-186.6 184.6zM325.1 300.5c-5.5-2.8-32.8-16.2-37.9-18-5.1-1.9-8.8-2.8-12.5 2.8s-14.3 18-17.6 21.8c-3.2 3.7-6.5 4.2-12 1.4-32.6-16.3-54-29.1-75.5-66-5.7-9.8 5.7-9.1 16.3-30.3 1.8-3.7 .9-6.9-.5-9.7s-12.5-30.1-17.1-41.2c-4.5-10.8-9.1-9.3-12.5-9.5-3.2-.2-6.9-.2-10.6-.2s-9.7 1.4-14.8 6.9c-5.1 5.6-19.4 19-19.4 46.3s19.9 53.7 22.6 57.4c2.8 3.7 39.1 59.7 94.8 83.8 35.2 15.2 49 16.5 66.6 13.9 10.7-1.6 32.8-13.4 37.4-26.4s4.6-24.1 3.2-26.4c-1.3-2.5-5-3.9-10.5-6.6z"/></svg>
             </div>
@@ -33,7 +33,7 @@
         </a>
 
         <!-- Email -->
-        <a :href="mailUrl" class="flex flex-col items-center justify-center gap-1.5" target="_blank">
+        <a href="mailto:?subject={{ share_text|urlencode }}&body={{ url|urlencode }}" class="flex flex-col items-center justify-center gap-1.5" target="_blank">
             <div class="w-fits flex items-center justify-center size-10 rounded-full bg-white dark:bg-primary-dark p-2">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" class="size-6 fill-on-primary dark:fill-on-primary-dark">
                     <path d="M1.5 8.67v8.58a3 3 0 0 0 3 3h15a3 3 0 0 0 3-3V8.67l-8.928 5.493a3 3 0 0 1-3.144 0L1.5 8.67Z" />
@@ -70,27 +70,10 @@
 </div>
 <script>
     function share() {
-        const currentUrl = encodeURIComponent(window.location.href);
-        const shareText = encodeURIComponent("Check out this cool app!");
-
-        const pageUrl = window.location.href;
-        const title = "AI Girlfriend app";
-        const text = "Check out this cool app!";
-
-
         return {
             copiedToClipboard: false,
-            currentUrl: currentUrl,
-            shareText: shareText,
-
-            facebookUrl: `https://www.facebook.com/sharer/sharer.php?u=${currentUrl}`,
-            twitterUrl: `https://twitter.com/intent/tweet?url=${currentUrl}&text=${shareText}`,
-            whatsappUrl: `https://api.whatsapp.com/send?text=${shareText}%20${currentUrl}`,
-            mailUrl:`mailto:?subject='AI Girlfriend app'&body='${shareText} ${currentUrl}'`,
-
-
             copyUrlToClipboard(url) {
-                navigator.clipboard.writeText(url).then(() => {
+                navigator.clipboard.writeText('{{ url }}').then(() => {
                     this.copiedToClipboard = true;
                     setTimeout(() => {
                         this.copiedToClipboard = false;
