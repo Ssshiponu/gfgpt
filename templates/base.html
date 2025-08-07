@@ -108,14 +108,14 @@
     </script>
 
     <!-- Google tag (gtag.js) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-MZN5PKVQ5F"></script>
+    {% comment %} <script async src="https://www.googletagmanager.com/gtag/js?id=G-MZN5PKVQ5F"></script>
     <script>
     window.dataLayer = window.dataLayer || [];
     function gtag(){dataLayer.push(arguments);}
     gtag('js', new Date());
 
     gtag('config', 'G-MZN5PKVQ5F');
-    </script>
+    </script> {% endcomment %}
         
     <script src="{% static 'alpine.js' %}" defer></script>
     <link rel="stylesheet" href="{% static "style.css" %}">

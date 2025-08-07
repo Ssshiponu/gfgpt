@@ -113,7 +113,7 @@
                         <p class="text-gray-600 mb-6 text-center">Install the app on your home screen.</p>
                         <div class="flex items-center justify-end gap-4">
                             <button @click="showModal = false" class="py-2 px-5 rounded font-semibold text-sm transition-colors duration-200 bg-gray-200 hover:bg-gray-300 text-gray-800">Not Now</button>
-                            <button 
+                            <button arial-label="install app"
                                 @click="install(); showModal = false" 
                                 :disabled="installing"
                                 class="py-2 px-5 rounded font-semibold text-sm transition-colors duration-200 bg-green-500 hover:bg-green-600 text-white"
@@ -140,7 +140,7 @@
             </a>
             <!-- Dropdown -->
             <div x-data="{ open: false }" class="relative">
-                <button @click="open = !open" class="p-2 rounded-full hover:bg-gray-100 focus:outline-none" arial-label="menu toggel">
+                <button arial-label="open menu" @click="open = !open" class="p-2 rounded-full hover:bg-gray-100 focus:outline-none" arial-label="menu toggel">
                     <!-- Menu Icon -->
                     <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-gray-800" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
                         <path d="M3 6h18M3 12h18M3 18h18" stroke-linecap="round" stroke-linejoin="round"/>
@@ -154,7 +154,7 @@
                     class="absolute right-0 mt-2 py-2 w-44 bg-white border border-gray-200 rounded-lg shadow z-20">
                     
                     <!-- Install App -->
-                    <button 
+                    <button arial-label="install app"
                         x-show="canInstall"
                         @click="install(); open = false" 
                         :disabled="installing"
@@ -275,7 +275,7 @@
             </div>
             <p class="text-xs text-gray-500 mt-2 flex items-center justify-center gap-1">
                 <span>created by Mohin Uddin Shipon</span>
-                <a target="_blank" href="https://mohinuddinshipon.pythonanywhere.com">
+                <a target="_blank" title="Mohin Uddin Shipon" href="https://mohinuddinshipon.pythonanywhere.com">
                     <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-external-link-icon lucide-external-link"><path d="M15 3h6v6"/><path d="M10 14 21 3"/><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/></svg>
                 </a>
             </p>
