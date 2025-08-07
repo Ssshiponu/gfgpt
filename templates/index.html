@@ -1,10 +1,10 @@
 {% extends "base.html" %}
 {% load static %}
 
-
 {% block content %}
-<body x-data="chatbot()">
-    <div  x-data="installApp()" class="relative flex flex-col justify-between max-w-2xl mx-auto w-full h-full">
+<body x-data="chatbot()" class="transition-all">
+    <div  x-data="installApp()"
+        class="relative flex flex-col justify-between max-w-2xl mx-auto w-full h-full">
         <!-- Modal -->
         <div>
             <!-- Modal Overlay -->
@@ -132,6 +132,7 @@
             </div>
         </div>
         <!-- Header -->
+        
         <header class="sticky top-0 h-16 bg-white flex items-center shadow-sm sm:shadow-none justify-between p-3 border-gray-200">
             <div class="w-10 h-10"></div>
             <a href="/" class="flex items-center justify-center">
@@ -229,8 +230,10 @@
                 </div>
             </template>
 
-            <div x-show="error != ''" x-text="error" style="display: none;" class="text-red-600 text-sm my-2 py-2 px-4 bg-red-100 border border-dashed border-red-600 rounded-lg"></div>
-            
+            <div class="p-2">
+                <div x-show="error != ''" x-text="error" style="display: none;" class="text-red-600 text-sm py-2 px-4 bg-red-100 border border-dashed border-red-600 rounded-lg"></div>
+            </div>
+
             <!-- Loading Indicator -->
             <div x-show="loading" class="flex justify-start" x-transition style="display: none;"> 
                 <div class="flex items-start space-x-3">
@@ -246,13 +249,15 @@
         </div>
 
         <!-- Input area -->
-        <div class="w-full max-w-2xl px-4  py-2 bg-white">
+        <div class="w-full max-w-2xl p-4 bg-white">
             <p x-show="currentMessage.length > 255" class="text-sm text-red-600 m-2"
             style="display: none;">message is too long</p>
             <div class="flex relative">
                 <input type="text"
                     x-model="currentMessage"
                     @keydown.enter="sendMessage()"
+                    @focus="scrollToBottom(); document.body.style.height = '100vh';"
+                    @blur="document.body.style.height = '100dvh';"
                     placeholder="Type your message..."
                     class="flex-1 min-w-0 px-4 py-2 pr-12 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-300 focus:border-transparent"
                     :disabled="loading"
@@ -268,7 +273,12 @@
                     </svg>
                 </button>
             </div>
-            <p class="text-xs text-center text-gray-500 mt-2">created by <a target="_blank" class="underline" href="https://mohinuddinshipon.pythonanywhere.com" class="underline">Mohin Uddin Shipon</a></p>
+            <p class="text-xs text-gray-500 mt-2 flex items-center justify-center gap-1">
+                <span>created by Mohin Uddin Shipon</span>
+                <a target="_blank" href="https://mohinuddinshipon.pythonanywhere.com">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-external-link-icon lucide-external-link"><path d="M15 3h6v6"/><path d="M10 14 21 3"/><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/></svg>
+                </a>
+            </p>
         </div>
     </div>
     {% include "chatbot.html" %}

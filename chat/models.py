@@ -112,3 +112,22 @@ class APIRequest(models.Model):
     def __str__(self):
         return f'IP:{self.ip_address}, KEY:{self.api_key_index}, MODEL:{self.model_name}'
     
+class SEO(models.Model):
+    name = models.CharField(max_length=100)
+    altname = models.CharField(max_length=100)
+    title = models.CharField(max_length=100)
+    description = models.TextField()
+    keywords = models.TextField()
+    author = models.CharField(max_length=100)
+    
+    created_at = models.DateTimeField(auto_now_add=True, null=True, blank=True)
+    updated_at = models.DateTimeField(auto_now=True, null=True, blank=True)
+
+    class Meta:
+        verbose_name = 'SEO'
+        verbose_name_plural = 'SEO'
+        ordering = ['-updated_at', '-created_at']
+
+    def __str__(self):
+        return self.title
+    

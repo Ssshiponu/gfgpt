@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 {% load static %}
 <html lang="en" class="scroll-smooth" prefix="og: https://ogp.me/ns#">
@@ -8,45 +7,45 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     
     <!-- Primary Meta Tags -->
-    <title>{% block title %}GF GPT - AI Girlfriend | Your Perfect AI Companion{% endblock %}</title>
-    <meta name="title" content="{% block meta_title %}GF GPT - AI Girlfriend | Your Perfect AI Companion{% endblock %}">
-    <meta name="description" content="{% block meta_description %}Experience the ultimate AI-powered girlfriend. Intelligent conversations, emotional support, and personalized interactions. Start your journey with GF GPT today.{% endblock %}">
-    <meta name="keywords" content="{% block meta_keywords %}AI girlfriend, artificial intelligence, AI companion, chatbot, virtual girlfriend, AI chat, emotional AI, intelligent conversation{% endblock %}">
-    <meta name="author" content="{% block author %}Mohin Uddin Shipon{% endblock %}">
-    <meta name="robots" content="{% block robots %}index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1{% endblock %}">
+    <title>{{ title }}</title>
+    <meta name="title" content="{{ title }}">
+    <meta name="description" content="{{ description }}">
+    <meta name="keywords" content="{{ keywords }}">
+    <meta name="author" content="{{ author }}">
+    <meta name="robots" content="index, follow">
     <meta name="googlebot" content="index, follow">
-    <meta name="language" content="English">
-    <meta name="revisit-after" content="7 days">
+    {% comment %} <meta name="language" content="English">
+    <meta name="revisit-after" content="7 days"> {% endcomment %}
     <meta name="csrf-token" content="{{ csrf_token }}">
     
     <!-- Canonical URL -->
-    <link rel="canonical" href="{% block canonical %}{{ request.build_absolute_uri }}{% endblock %}">
+    <link rel="canonical" href="{{ request.build_absolute_uri }}">
     
     <!-- Open Graph / Facebook -->
-    <meta property="og:type" content="{% block og_type %}website{% endblock %}">
-    <meta property="og:site_name" content="GF GPT">
-    <meta property="og:title" content="{% block og_title %}GF GPT - AI Girlfriend | Your Perfect AI Companion{% endblock %}">
-    <meta property="og:description" content="{% block og_description %}Experience the ultimate AI-powered girlfriend. Intelligent conversations, emotional support, and personalized interactions. Start your journey with GF GPT today.{% endblock %}">
-    <meta property="og:image" content="{% block og_image %}{% static 'icons/og-image.png' %}{% endblock %}">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="{{ name }}">
+    <meta property="og:title" content="{{ title }}">
+    <meta property="og:description" content="{{ description }}">
+    <meta property="og:image" content="{% static 'icons/icon-512.png' %}">
     <meta property="og:image:width" content="512">
     <meta property="og:image:height" content="512">
-    <meta property="og:image:alt" content="GF GPT - AI Girlfriend Platform">
-    <meta property="og:url" content="{% block og_url %}{{ request.build_absolute_uri }}{% endblock %}">
-    <meta property="og:locale" content="bn_BD">
+    <meta property="og:image:alt" content="{{ title }}">
+    <meta property="og:url" content="{{ request.build_absolute_uri }}">
+    {% comment %} <meta property="og:locale" content="bn_BD"> {% endcomment %}
     
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:site" content="@gfgpt">
     <meta name="twitter:creator" content="@mohin_uddin_s">
-    <meta name="twitter:title" content="{% block twitter_title %}GF GPT - AI Girlfriend | Your Perfect AI Companion{% endblock %}">
-    <meta name="twitter:description" content="{% block twitter_description %}Experience the ultimate AI-powered girlfriend. Intelligent conversations, emotional support, and personalized interactions.{% endblock %}">
-    <meta name="twitter:image" content="{% block twitter_image %}{% static 'icons/icon-512.png' %}{% endblock %}">
-    <meta name="twitter:image:alt" content="GF GPT - AI Girlfriend Platform">
+    <meta name="twitter:title" content="{{ title }}">
+    <meta name="twitter:description" content="{{ description }}">
+    <meta name="twitter:image" content="{% static 'icons/icon-512.png' %}">
+    <meta name="twitter:image:alt" content="{{ title }}">
     
     <!-- Additional Meta Tags -->
-    <meta name="theme-color" content="#ff1200">
-    <meta name="msapplication-TileColor" content="#ff1200">
-    <meta name="msapplication-navbutton-color" content="#ff1200">
+    <meta name="theme-color" content="#ff0000">
+    <meta name="msapplication-TileColor" content="#ff0000">
+    <meta name="msapplication-navbutton-color" content="#ff0000">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="mobile-web-app-capable" content="yes">
@@ -58,8 +57,8 @@
     <link rel="icon" type="image/png" sizes="48x48" href="{% static 'icons/icon-48.png' %}">
     <link rel="icon" type="image/png" sizes="192x192" href="{% static 'icons/icon-192.png' %}">
     <link rel="icon" type="image/png" sizes="512x512" href="{% static 'icons/icon-512.png' %}">
-    <link rel="apple-touch-icon" sizes="180x180" href="{% static 'icons/icon-192.png' %}">
-    <link rel="mask-icon" href="{% static 'icons/icon.svg' %}" color="#ff1200">
+    <link rel="apple-touch-icon" sizes="180x180" href="{% static 'icons/apple-touch-icon.png' %}">
+    <link rel="mask-icon" href="{% static 'icons/icon-maskable.png' %}">
     
     <!-- PWA Manifest -->
     <link rel="manifest" href="{% static 'manifest.json' %}">
@@ -69,9 +68,9 @@
     {
         "@context": "https://schema.org",
         "@type": "WebApplication",
-        "name": "GF GPT",
-        "alternateName": "AI Girlfriend",
-        "description": "Experience the ultimate AI-powered girlfriend. Intelligent conversations, emotional support, and personalized interactions.",
+        "name": "{{ name }}",
+        "alternateName": "{{ altname }}",
+        "description": "{{ description }}",
         "url": "{{ request.build_absolute_uri }}",
         "applicationCategory": "Entertainment",
         "operatingSystem": "Any",
@@ -82,17 +81,12 @@
         },
         "author": {
             "@type": "Person",
-            "name": "Mohin Uddin Shipon"
+            "name": "{{ author }}"
         },
         "publisher": {
             "@type": "Organization",
-            "name": "GF GPT"
-        },
-        {% comment %} "aggregateRating": {
-            "@type": "AggregateRating",
-            "ratingValue": "4.8",
-            "reviewCount": "1250"
-        } {% endcomment %}
+            "name": "{{ name }}",
+        }
     }
     </script>
     
@@ -101,14 +95,14 @@
     {
         "@context": "https://schema.org",
         "@type": "Organization",
-        "name": "GF GPT",
+        "name": "{{ name }}",
         "url": "{{ request.build_absolute_uri }}",
         "logo": "{% static 'icons/icon-512.png' %}",
-        "description": "Leading AI girlfriend platform providing intelligent conversation and emotional companionship.",
-        "foundingDate": "2024",
+        "description": "{{ description }}",
+        "foundingDate": "2025-07-28",
         "founder": {
             "@type": "Person",
-            "name": "Mohin Uddin Shipon"
+            "name": "{{ author }}",
         }
     }
     </script>
@@ -127,7 +121,6 @@
     <script src="{% static 'tailwindcss.js' %}"></script>
     <script src="{% static 'alpine.js' %}" defer></script>
     <link rel="stylesheet" href="{% static "style.css" %}">
-    {% block extra_head %}{% endblock %}
 </head>
 {% block content %}{% endblock %}
 </html>

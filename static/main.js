@@ -15,7 +15,3 @@ function formate(text) {
 }
 
 document.createElement("iframe").allow="unload";
-
-document.addEventListener('resize', () => {
-    document.body.classList.add('h-screen')
-})

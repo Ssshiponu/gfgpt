@@ -1,7 +1,8 @@
 
 from django.http import JsonResponse
 from django.utils.html import escape
-from .models import Usr
+from datetime import datetime
+from .models import Usr, SEO
 from django.shortcuts import render, redirect
 from .ai import ai
 from .profanity import check_profanity
@@ -9,12 +10,20 @@ import json
 from .utils import *
 from django.conf import settings
 
+def robots(requests):
+    return render(requests, 'robots.txt', content_type="text/plain",
+                context={'sitemap_url': 'https://' + requests.get_host() + '/sitemap.xml'})
+
+def sitemap(requests):
+    return render(requests, 'sitemap.xml', content_type="application/xml",
+                context={'url': 'https://' + requests.get_host(), 'lastmod': datetime.now().strftime('%Y-%m-%d')})
+
 
 def chat(requests):
-    remove_empty_usrs()
     user, first_time = get_or_create_usr(requests)
     
     messages = user.messages if user.messages is not None else []
+    seo = SEO.objects.all().first()
 
     context = {'user': user,
                'messages': messages,
@@ -24,7 +33,15 @@ def chat(requests):
                'use_emojis': Usr.use_emojis,
                'pronouns': Usr.pronouns,
                'personalities': Usr.personalities,
-               'tones': Usr.tones}
+               'tones': Usr.tones,
+               # SEO
+               'name': seo.name,
+               'altname': seo.altname,
+               'title': seo.title,
+               'description': seo.description,
+               'keywords': seo.keywords,
+               'author': seo.author,
+               }
 
     return render(requests, 'index.html', context)
 
@@ -87,6 +104,7 @@ def create(requests):
         return JsonResponse({'status': 'error', 'message': 'Invalid session'})
 
     if requests.method == 'POST':
+        remove_empty_usrs()
         user, _ = get_or_create_usr(requests)
         data = json.loads(requests.body)
 
