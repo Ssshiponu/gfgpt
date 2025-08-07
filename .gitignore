@@ -1,4 +1,7 @@
 venv/
+node_modules/
+package-lock.json
+package.json
 staticfiles/
 *.sqlite3
 __pycache__/

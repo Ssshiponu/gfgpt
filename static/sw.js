@@ -1,7 +1,6 @@
 const CACHE_NAME = 'gfgpt';
 const urlsToCache = [
   '/',
-  '/static/tailwindcss.js',
   '/static/alpine.js',
   '/static/manifest.json',
   '/static/icons/icon-192.png',

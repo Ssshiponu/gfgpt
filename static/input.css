@@ -1,0 +1,13 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+    height: 100vh;
+}
+
+@supports (height: 100dvh) {
+    body {
+        height: 100dvh;
+    }
+}
