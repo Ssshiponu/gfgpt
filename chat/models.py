@@ -2,6 +2,7 @@ from django.db import models
 
 class Usr(models.Model):
     languages = [
+        'auto',
         'বাংলা',
         'Banglish',
         'English',
@@ -16,6 +17,7 @@ class Usr(models.Model):
     ]
 
     pronouns = {
+        'auto': ['you',],
         'বাংলা': ['তুমি', 'তুই', 'আপনি'],
         'Banglish': ['tumi', 'tui', 'apni'],
         'English': ['you',],
@@ -44,12 +46,11 @@ class Usr(models.Model):
         ("girl", "Girl"),
     )
 
-
     def default_usr_settings():
         return {
-            "language": 'বাংলা',
+            "language": 'auto',
             "use_emojis": 'auto',
-            "pronoun": 'তুমি',
+            "pronoun": 'you',
             "personality": 'friendly',
             "tone": 'romantic',
         }
@@ -119,7 +120,7 @@ class SEO(models.Model):
     description = models.TextField()
     keywords = models.TextField()
     author = models.CharField(max_length=100)
-    
+
     created_at = models.DateTimeField(auto_now_add=True, null=True, blank=True)
     updated_at = models.DateTimeField(auto_now=True, null=True, blank=True)
 

@@ -140,8 +140,15 @@ def user_settings(request):
     if request.method == 'POST':
         user, _ = get_or_create_usr(request)
         try:
+            
             data = json.loads(request.body)
             form_action = data.get("formAction")
+
+            if form_action == 'reset':
+                user.settings = Usr.default_usr_settings()
+                user.save()
+                return JsonResponse({'status': 'ok', 'message': 'Settings updated successfully.'})
+
             language = data.get("language", "")
             use_emojis = data.get("use_emojis", "")
             pronoun = data.get("pronoun", "")
@@ -168,11 +175,10 @@ def user_settings(request):
                     "personality": personality,
                     "tone": tone
                 }
+                user.save()
+                return JsonResponse({'status': 'ok', 'message': 'Settings updated successfully.'})
                 
-            elif form_action == 'reset':
-                user.settings = Usr.default_usr_settings()
-            user.save()
-            return JsonResponse({'status': 'ok', 'message': 'Settings updated successfully.'})
+            
         except Exception as e:
             print(e)
             return JsonResponse({'status': 'error', 'message': 'Invalid data or server error.'})
