@@ -17,7 +17,10 @@ def get_or_create_usr(requests):
 
     usr = Usr.objects.filter(session=session).last()
     if not usr:
-        usr = Usr.objects.create(session=session)
+        usr = Usr.objects.create(session=session,
+                                 ip_address=get_ip(requests),
+                                 geo_location=get_geo_location(get_ip(requests)),
+                                 )
 
     if usr.name == None:
         first_time = True

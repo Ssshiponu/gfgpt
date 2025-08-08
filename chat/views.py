@@ -107,7 +107,6 @@ def create(requests):
         return JsonResponse({'status': 'error', 'message': 'Invalid session'})
 
     if requests.method == 'POST':
-        remove_empty_usrs()
         user, _ = get_or_create_usr(requests)
         data = json.loads(requests.body)
 
