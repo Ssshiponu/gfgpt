@@ -41,7 +41,7 @@ function chatbot() {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
-                        'X-CSRFToken': CSRFToken(),
+                        'X-CSRFToken': '{{ csrf_token }}',
                     },
                     body: JSON.stringify(
                         {   
@@ -132,7 +132,7 @@ function chatbot() {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
-                            'X-CSRFToken': CSRFToken(),
+                            'X-CSRFToken': '{{ csrf_token }}',
                         },
                         body: JSON.stringify({
                             gender: this.selectedGender,

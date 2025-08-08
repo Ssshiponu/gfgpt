@@ -25,26 +25,26 @@ def chat(requests):
     messages = user.messages if user.messages is not None else []
     seo = SEO.objects.all().first()
 
-    context = {'user': user,
-               'messages': messages,
-               'settings': user.settings,
-               'first_time': first_time,
-               'languages': Usr.languages,
-               'use_emojis': Usr.use_emojis,
-               'pronouns': Usr.pronouns,
-               'personalities': Usr.personalities,
-               'tones': Usr.tones,
-               # SEO
-               'name': seo.name,
-               'altname': seo.altname,
-               'title': seo.title,
-               'description': seo.description,
-               'keywords': seo.keywords,
-               'author': seo.author,
-
-               'url': requests.build_absolute_uri('/'),
-               'share_text': 'Check out this cool app!',
-               }
+    context = {
+        'user': user,
+        'messages': messages,
+        'settings': user.settings,
+        'first_time': first_time,
+        'languages': Usr.languages,
+        'use_emojis': Usr.use_emojis,
+        'pronouns': Usr.pronouns,
+        'personalities': Usr.personalities,
+        'tones': Usr.tones,
+        # SEO
+        'name': seo.name if seo else '',
+        'altname': seo.altname if seo else '',
+        'title': seo.title if seo else '',
+        'description': seo.description if seo else '',
+        'keywords': seo.keywords if seo else '',
+        'author': seo.author if seo else '',
+        'url': requests.build_absolute_uri('/'),
+        'share_text': 'Check out this cool app!',
+    }
 
     return render(requests, 'index.html', context)
 
