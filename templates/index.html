@@ -220,7 +220,7 @@
                 >
                     <div class="flex flex-wrap items-start w-full" :class="message.role === 'user' ? 'justify-end ml-6' : 'justify-start mr-6'">
                         <div class="text-gray-600 px-3 py-1 rounded-lg"
-                            :class="message.role === 'user' ? 'bg-gray-100' : 'bg-white border border-gray-100'"
+                            :class="message.role === 'user' ? 'bg-gray-100 rounded-tr-none' : 'bg-white border border-gray-100 rounded-tl-none'"
                             x-transition:enter="transition ease-out duration-200"
                             x-transition:enter-start="opacity-0 transform translate-y-2"
                             x-transition:enter-end="opacity-100 transform translate-y-0">
@@ -256,8 +256,6 @@
                 <input type="text"
                     x-model="currentMessage"
                     @keydown.enter="sendMessage()"
-                    @focus="scrollToBottom(); document.body.style.height = '100vh';"
-                    @blur="document.body.style.height = '100dvh';"
                     placeholder="Type your message..."
                     class="flex-1 min-w-0 px-4 py-2 pr-12 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-300 focus:border-transparent"
                     :disabled="loading"

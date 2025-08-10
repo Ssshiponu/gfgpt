@@ -4,11 +4,26 @@ from django.utils.safestring import mark_safe
 import json
 from .models import Usr, APIKey, APIRequest, SEO
 
+class HasName(admin.SimpleListFilter):
+    title = 'Has Name'
+    parameter_name = 'has_name'
+
+    def lookups(self, request, model_admin):
+        return (
+            ('has_name', 'Has chat'),
+            ('no_name', 'Empty'),
+        )
+
+    def queryset(self, request, queryset):
+        if self.value() == 'has_name':
+            return queryset.filter(name__isnull=False)
+        elif self.value() == 'no_name':
+            return queryset.filter(name__isnull=True)
 
 @admin.register(Usr)
 class UsrAdmin(admin.ModelAdmin):
     list_display = ['name', 'girlfriend', 'gender', 'language_setting','updated_at', 'created_at']
-    list_filter = ['gender', 'created_at', 'updated_at']
+    list_filter = [HasName, 'gender', 'created_at', 'updated_at']
     search_fields = ['name', 'girlfriend', 'session']
     readonly_fields = ['created_at', 'updated_at', 'messages_display']
     
@@ -33,7 +48,7 @@ class UsrAdmin(admin.ModelAdmin):
             'classes': ('collapse',)
         }),
     )
-    
+
     def session_short(self, obj):
         """Display shortened session ID"""
         if obj.session:
