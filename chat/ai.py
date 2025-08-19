@@ -42,6 +42,7 @@ def get_response(api_key, model, system_instruction, context):
                 system_instruction=system_instruction,
                 response_modalities=["text"],
                 response_mime_type="text/plain",
+                temperature=2,
             ),
             contents=context
         )
